@@ -409,8 +409,20 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     [self scrollToLastChat];
 }
 
-- (IBAction)sendChat {
-    if (![self.chatEntryTextView.text isEqualToString:@""]) {
+- (IBAction)sendChat
+{    
+    if ((![self.user.isContact boolValue]) && (self.user.contactsOnlyChat)) {
+        NSString *restrictedMsg = [NSString stringWithFormat:@"%@ has elected to communicate with only contacts.",
+                                     self.user.nickname];
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:nil
+                              message:restrictedMsg
+                              delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles: nil];
+        [alert show];
+    }
+    else if (![self.chatEntryTextView.text isEqualToString:@""]) {
         // Don't do squat on empty chat entries
         ChatMessage *message = [[ChatMessage alloc]
                                 initWithMessage:self.chatEntryTextView.text
